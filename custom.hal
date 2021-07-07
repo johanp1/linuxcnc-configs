@@ -1,0 +1,138 @@
+# Include your customized HAL commands here
+# This file will not be overwritten when you run stepconf again
+ 	
+loadrt scale count=2  # 0 used to convert spindle rps-to-rpm, 1 used to scale jog-scale output from classicladder
+loadrt near names=spindle-at-speed
+loadrt pid names=spindle-speed-ctrl
+loadrt limit2 names=spindle-ramp
+loadrt not count=1     # used for ramping spindle speed
+loadrt and2 count=3    # and2.0 used in custom_postgui.hal for MPG run-button
+loadrt classicladder_rt
+
+loadusr -Wn my-mpg python serialEventHandler.py --port=/dev/ttyUSB0 -c my-mpg mpg.xml
+loadusr -Wn my-encoder python fake_encoder.py --port=/dev/ttyS0 -c my-encoder
+loadusr classicladder test_ladder.clp --nogui
+
+addf scale.0 servo-thread
+addf scale.1 servo-thread
+addf spindle-at-speed servo-thread
+addf spindle-speed-ctrl.do-pid-calcs servo-thread
+addf spindle-ramp servo-thread
+addf not.0 servo-thread
+addf and2.0 servo-thread
+addf and2.1 servo-thread
+addf and2.2 servo-thread
+addf classicladder.0.refresh servo-thread
+
+### spindel speed ramping
+setp spindle-ramp.maxv 500
+net spindle-cmd-rpm => spindle-ramp.in
+net spindle-ramped <= spindle-ramp.out => pwmgen.0.value
+net spindle-on not.0.in
+net spindle-off not.0.out
+net spindle-off spindle-ramp.load
+net spindle-ramped => spindle-at-speed.in2
+
+### spindle at speed monitoring ###
+setp spindle-at-speed.scale 0.98
+setp spindle-at-speed.difference 10
+setp scale.0.gain 60     # rps to rpm
+setp scale.0.offset 0
+
+net spindle-velocity-rpm <= scale.0.out
+net spindle-cmd-rpm => spindle-at-speed.in1
+#net spindle-velocity-rpm => spindle-at-speed.in2
+net spindle-ramped => spindle-at-speed.in2
+net spindle-ready <= spindle-at-speed.out => spindle.0.at-speed
+
+### encoder ###
+net spindle-position my-encoder.position => spindle.0.revs
+net spindle-velocity-rps my-encoder.velocity 
+net spindle-velocity-rps => spindle.0.speed-in
+net spindle-velocity-rps => scale.0.in
+net spindle-index-enable my-encoder.index-enable <=> spindle.0.index-enable
+
+### PID ctrl ###
+net spindle-cmd-rpm => spindle-speed-ctrl.command
+setp spindle-speed-ctrl.Pgain 2.5
+setp spindle-speed-ctrl.Igain 3
+setp spindle-speed-ctrl.Dgain 2.3
+setp spindle-speed-ctrl.FF0 0
+setp spindle-speed-ctrl.FF1 1.5
+setp spindle-speed-ctrl.maxoutput 4500
+setp spindle-speed-ctrl.deadband 25
+#setp spindle-speed-ctrl.maxerror 1000
+setp spindle-speed-ctrl.enable 0
+
+net spindle-velocity-rpm => spindle-speed-ctrl.feedback 
+#net spindle-speed-ctrl-out spindle-speed-ctrl.output => pwmgen.0.value
+net spindle-on => spindle-speed-ctrl.enable  #from spindle.0.on
+net spindle-index-enable => spindle-speed-ctrl.index-enable 
+
+### mist coolant ctrl ###
+net mist-cmd iocontrol.0.coolant-mist => parport.0.pin-14-out
+
+### e-stop chain ###
+#net estop-out <= iocontrol.0.user-enable-out
+#net estop-out => iocontrol.0.emc-enable-in
+
+net estop-internal <= iocontrol.0.user-enable-out
+net estop-external <=  parport.0.pin-13-in-not
+
+net estop-internal => and2.1.in0
+net estop-external => and2.1.in1
+net estop-chain and2.1.out => iocontrol.0.emc-enable-in
+
+## restoring tool after homing #################################################
+# note, logic assumes z-axis homed first, when x and y axis' are 
+# homed, all axis are done
+net x-homed halui.joint.0.is-homed and2.2.in0
+net y-homed halui.joint.1.is-homed and2.2.in1
+net xy-homed and2.2.out halui.mdi-command-09
+
+### pendant ##########################################
+# jog wheel connects to x, y, z axis
+net mpg-jog-counts      joint.0.jog-counts axis.x.jog-counts          <= my-mpg.jog-counts
+net mpg-jog-counts      joint.1.jog-counts axis.y.jog-counts
+net mpg-jog-counts      joint.2.jog-counts axis.z.jog-counts
+
+# axis selector connects to x, y, z axis enable
+net jog-axis-sel    classicladder.0.s32in-00
+net jog-x-enable    classicladder.0.out-00
+net jog-y-enable    classicladder.0.out-01
+net jog-z-enable    classicladder.0.out-02
+
+net jog-axis-sel    my-mpg.axis-selector
+net jog-x-enable    axis.x.jog-enable
+net jog-y-enable    axis.y.jog-enable
+net jog-z-enable    axis.z.jog-enable
+
+# jog scale selector connects to x, y, z axis jog scale and jog velocity mode
+setp scale.1.gain 0.01
+setp scale.1.offset 0
+net jog-scale-100   classicladder.0.floatout-00 scale.1.in
+net jog-scale-sel   classicladder.0.s32in-01
+net jog-scale       scale.1.out
+
+net jog-scale-sel   my-mpg.scale-selector
+net jog-scale       joint.0.jog-scale axis.x.jog-scale
+net jog-scale       joint.1.jog-scale axis.y.jog-scale
+net jog-scale       joint.2.jog-scale axis.z.jog-scale
+
+net  vel-mode-sel   classicladder.0.out-03
+net  vel-mode-sel   joint.0.jog-vel-mode axis.x.jog-vel-mode
+net  vel-mode-sel   joint.1.jog-vel-mode axis.y.jog-vel-mode
+net  vel-mode-sel   joint.2.jog-vel-mode axis.z.jog-vel-mode
+
+### connect the buttons
+# connect Return To Home button
+net rth-button           halui.mdi-command-00     <= my-mpg.rth-btn
+
+# connect Run button
+net run-button          halui.mode.auto and2.0.in0 <= my-mpg.prog-run-btn
+net program-run-ok      and2.0.in1               <= halui.mode.is-auto
+net remote-program-run  halui.program.run        <= and2.0.out
+
+# connect E-Stop button
+net estop-button       halui.estop.activate     <= my-mpg.estop-btn
+

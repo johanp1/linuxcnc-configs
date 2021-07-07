@@ -1,0 +1,4 @@
+#!/bin/bash
+# file to turn off parport pin 17 to open the spindle air valve
+halcmd setp parport.0.pin-17-out False
+exit 0

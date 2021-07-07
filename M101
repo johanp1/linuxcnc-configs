@@ -1,0 +1,4 @@
+#!/bin/bash
+# file to turn on parport pin 17 to open the spindle air valve
+halcmd setp parport.0.pin-17-out True
+exit 0

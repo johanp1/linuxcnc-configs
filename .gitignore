@@ -1,0 +1,50 @@
+#Ignore thumbnails created by Windows
+Thumbs.db
+#Ignore files built by Visual Studio
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.bak
+*.cache
+*.ilk
+*.log
+[Bb]in
+[Dd]ebug*/
+*.sbr
+obj/
+[Rr]elease*/
+_ReSharper*/
+.klocwork
+.vs
+[Dd]ebug
+
+#General build files
+*.obj
+*.tmp
+*.o
+*.d
+*.exe
+
+#default log
+out.txt
+
+#input files
+*.ngc
+
+#Python
+*.pyc
+
+#emacs saves
+*~
+\#*
+
+#test-bench builds
+[Ll]ib
+*_tests
+
+\.vscode

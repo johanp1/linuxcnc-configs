@@ -1,0 +1,45 @@
+﻿Märkning	I/O				Beskrivning
+----------------------------------------------------------------------------
+		P1
+		P2			X step
+		P3			X dir
+		P4			Y step
+		P5			Y dir
+		P6			Z step
+		P7			Z dir
+
+R1		P8     (i/o-kort)	Relä spindel CW
+R2		P9     -"-		Relä oljepump, spindel
+M2		P14    -"-		MOS-FET tryckluftsventil dimsmörjning
+		P16    -"-		PWM spindel
+M1		P17    -"-		MOS-FET tryckluftsventil, spindel
+
+
+P1		P10    -"-		Z proximity sensor, home position
+P2		P11    -"-		Y proximity sensor, home and max position
+P3		P12    -"-		X proximity sensor, home and max position
+		P13
+		P15
+
+brun/PHASE1(A)				encoder phaseA+
+grå/PHASE2(B)				encoder phaseB+
+röd/PHASE3(Z)				encoder phaseZ+, index pulse
+blå					5V supply encoder
+2st vit					GND encoder
+
+
+
+
+
+
+#P4					X rotations sensor, per ledstångsvarvvarv
+#P5					Y rotations sensor, per ledstångsvarvvarv
+#P6					Z rotations sensor, per ledstångsvarvvarv
+
+#COL1		P12	(i/o-kort)	collector transistor1, downsampled phaseA
+#COL2		P13	(i/o-kort)	collector transistor2, downsampled phaseB
+#COL3		P15	(i/o-kort)	collector transistor3, pulse stretched phaseZ index
+
+#BASE1		D3 (arduino)		base transistor1, downsampled phaseA
+#BASE2		D5 (arduino)		base transistor2, downsampled phaseB
+#BASE3		D7 (arduino)		base transistor3, downsampled phaseZ index

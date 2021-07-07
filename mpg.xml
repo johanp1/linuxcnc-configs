@@ -1,0 +1,20 @@
+<mpg>  
+   <jogwheel> 
+      <halpin>"jog-counts"<event>jog</event><type>s32</type></halpin>
+   </jogwheel>
+   <radiobutton>
+      <halpin>"axis-selector"<event>sela</event><type>s32</type></halpin>
+   </radiobutton>
+   <radiobutton>
+      <halpin>"scale-selector"<event>sels</event><type>s32</type></halpin>
+   </radiobutton>   
+   <button> 
+      <halpin>"rth-btn"<event>rth</event><type>bit</type></halpin> 
+   </button>
+   <button> 
+      <halpin>"prog-run-btn"<event>run</event><type>bit</type></halpin>
+   </button>
+   <button> 
+      <halpin>"estop-btn"<event>est</event><type>bit</type></halpin>
+   </button>
+</mpg>

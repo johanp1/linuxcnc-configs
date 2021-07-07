@@ -1,0 +1,158 @@
+<pyvcp>
+  <labelframe text="EMCO VCM100">
+    <font>("Helvetica",16)</font>
+
+      <!-- buttons -->
+      <vbox>
+		<relief>RIDGE</relief>
+		<bd>3</bd>
+		<button>
+		  <halpin>"rth-button"</halpin>
+		  <text>"Rapid to Home"</text>
+		</button>
+		<button>
+		  <halpin>"tc-button"</halpin>
+		  <text>"Tool Change Pos"</text>
+		</button>
+		<button>
+			  <halpin>"lube-on"</halpin>
+			  <text>"Lube"</text>
+		</button>
+      </vbox>
+      
+      <vbox>
+		<relief>RIDGE</relief>
+		<bd>3</bd>
+		<hbox>
+		  <label>
+			<text>"Tool 1  "</text>
+		  </label>
+		  <button>
+			<halpin>"change-tool1"</halpin>
+			<text>"Change"</text>
+		  </button>
+		</hbox>
+
+		<hbox>
+		  <label>
+			<text>"Tool 2  "</text>
+		  </label>
+		  <button>
+			<halpin>"change-tool2"</halpin>
+			<text>"Change"</text>
+		  </button>
+		</hbox>
+
+		<hbox>
+		  <label>
+			<text>"Tool 3  "</text>
+		  </label>
+		  <button>
+			<halpin>"change-tool3"</halpin>
+			<text>"Change"</text>
+		  </button>
+		</hbox>
+
+		<hbox>
+		  <label>
+			<text>"Tool 4  "</text>
+		  </label>
+		  <button>
+			<halpin>"change-tool4"</halpin>
+			<text>"Change"</text>
+		  </button>
+		</hbox>
+
+		<hbox>
+		  <label>
+			<text>"Tool 5  "</text>
+		  </label>
+		  <button>
+			<halpin>"change-tool5"</halpin>
+			<text>"Change"</text>
+		  </button>
+		</hbox>
+
+		<hbox>
+		  <label>
+			<text>"Tool 6  "</text>
+		  </label>
+		  <button>
+			<halpin>"change-tool6"</halpin>
+			<text>"Change"</text>
+		  </button>
+		</hbox>
+	  </vbox>
+		  
+      <vbox>
+		<relief>RIDGE</relief>
+		<bd>3</bd>
+		<hbox>
+		  <relief>RIDGE</relief>
+		  <bd>2</bd>
+		  <label>
+			<text>"Spindle cmd RPM"</text>
+		  </label>
+		  <number>
+			<halpin>"spindle-ref-rpm"</halpin>
+			<format>"+4.2f"</format>
+		  </number>
+		</hbox>
+		<hbox>
+		  <relief>RIDGE</relief>
+		  <bd>2</bd>
+		  <label>
+			<text>"Spindle actual RPM"</text>
+		  </label>
+		  <number>
+			<halpin>"spindle-curr-rpm"</halpin>
+			<format>"+4.2f"</format>
+		  </number>
+		</hbox>
+		<hbox>
+		  <relief>RIDGE</relief>
+		  <bd>2</bd>
+		  <label>
+			<text>"Spindle PWM Duty"</text>
+		  </label>
+		  <number>
+			<halpin>"spindle-pwm-duty"</halpin>
+			<format>"+4.2f"</format>
+		  </number>
+		</hbox>
+		<hbox>
+		  <relief>RIDGE</relief>
+		  <bd>2</bd>
+		  <label>
+			<text>"spindle at speed"</text>
+		  </label>
+		  <led>
+			<halpin>"led-spindle-at-speed"</halpin>
+			<on_color>"green"</on_color>
+			<off_color>"red"</off_color>
+		  </led>
+		</hbox>
+		<hbox>
+		  <relief>RIDGE</relief>
+		  <bd>2</bd>
+		  <label>
+			<text>"Current Tool"</text>
+		  </label>
+		  <s32>
+			<halpin>"current-tool"</halpin>
+			<format>"2d"</format>
+		  </s32>
+		</hbox>
+      </vbox>
+      <vbox>
+		<label>
+			<text>"Spindle Feedback"</text>
+		</label>
+		<checkbutton>
+			<halpin>"wd-chkbtn"</halpin>
+			<text>"Watchdog Enable  "</text>
+			<initval>1</initval>
+		</checkbutton>
+      </vbox>      
+  </labelframe>
+</pyvcp>
