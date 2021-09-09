@@ -1,0 +1,19 @@
+o<mychange> sub
+   o10 if [#<_current_tool> NE #<_selected_tool>]
+      ;(DEBUG, current tool: #<_current_tool>, selected_tool: #<_selected_tool>)
+      #<saved_z> = [#<_z>]      ; save position
+      #4999 = #<_selected_tool> ; store selected tool to use M61 at start-up
+      G53 G0 Z87     ; rapid to tool change location
+      M6
+      ;G53 G0 Z50
+      ;M101          ; engage spindle air blower
+      ;G53 G0 Z35
+      ;M102          ; disengage spindle air blower
+      ;(DEBUG, saved-z: #<saved_z>)
+      G43
+      G0 Z[#<saved_z>] ; restore position
+   o10 else
+      (DEBUG, tool #<_selected_tool> already in spindle)
+   o10 endif
+o<mychange> endsub
+M2

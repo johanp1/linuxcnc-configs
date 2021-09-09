@@ -33,9 +33,6 @@ _ReSharper*/
 #default log
 out.txt
 
-#input files
-*.ngc
-
 #Python
 *.pyc
 
