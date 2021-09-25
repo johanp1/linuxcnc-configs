@@ -13,7 +13,7 @@ o<mychange> sub
       G43
       G0 Z[#<saved_z>] ; restore position
    o10 else
-      (DEBUG, tool #<_selected_tool> already in spindle)
+      (PRINT, tool #<_selected_tool> already in spindle)
    o10 endif
 o<mychange> endsub
 M2
