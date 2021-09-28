@@ -1,0 +1,4 @@
+<mpg>  
+   <function>touch off selected axis<gcode>O&lt;mytouch&gt;call</gcode></function>
+   <function>Return to z-home<gcode>G53 G0 Z0</gcode></function>
+</mpg>
