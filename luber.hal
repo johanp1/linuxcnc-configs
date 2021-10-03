@@ -8,4 +8,4 @@ setp my-luber.lube-level-ok 1
 net iocontrol.0.lube-level <= my-luber.lube-level-alarm
 
 net luber-reset my-luber.reset
-net lube-cmd my-luber.lube-cmd
+net lube-cmd-out my-luber.lube-cmd => parport.0.pin-09-out

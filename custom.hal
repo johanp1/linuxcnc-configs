@@ -6,7 +6,8 @@ loadrt near names=spindle-at-speed
 loadrt pid names=spindle-speed-ctrl
 loadrt limit2 names=spindle-ramp
 loadrt not count=1     # used for ramping spindle speed
-loadrt and2 count=3    # and2.0 used in custom_postgui.hal for MPG run-button
+loadrt and2 count=3    # and2.0 used for MPG run-button, and2.1 for e-stop-chain, and2.2 for setting tool after homeing
+loadrt or2 count=1     # used in by luber and pyvcp to command lube valve
 loadrt classicladder_rt
 
 loadusr -Wn my-mpg python serialEventHandler.py --port=/dev/ttyUSB0 -c my-mpg mpg.xml
@@ -22,6 +23,7 @@ addf not.0 servo-thread
 addf and2.0 servo-thread
 addf and2.1 servo-thread
 addf and2.2 servo-thread
+addf or2.0 servo-thread
 addf classicladder.0.refresh servo-thread
 
 ### spindel speed ramping
@@ -73,9 +75,6 @@ net spindle-index-enable => spindle-speed-ctrl.index-enable
 net mist-cmd iocontrol.0.coolant-mist => parport.0.pin-14-out
 
 ### e-stop chain ###
-#net estop-out <= iocontrol.0.user-enable-out
-#net estop-out => iocontrol.0.emc-enable-in
-
 net estop-internal <= iocontrol.0.user-enable-out
 net estop-external <=  parport.0.pin-13-in-not
 
@@ -88,7 +87,7 @@ net estop-chain and2.1.out => iocontrol.0.emc-enable-in
 # homed, all axis are done
 net x-homed halui.joint.0.is-homed and2.2.in0
 net y-homed halui.joint.1.is-homed and2.2.in1
-net xy-homed and2.2.out halui.mdi-command-09
+net xy-homed and2.2.out halui.mdi-command-08
 
 ### pendant ##########################################
 # jog wheel connects to x, y, z axis
@@ -110,14 +109,14 @@ net jog-z-enable    axis.z.jog-enable
 # jog scale selector connects to x, y, z axis jog scale and jog velocity mode
 setp scale.1.gain 0.01
 setp scale.1.offset 0
-net jog-scale-100   classicladder.0.floatout-00 scale.1.in
+net jog-scale-100   classicladder.0.floatout-00   scale.1.in
 net jog-scale-sel   classicladder.0.s32in-01
 net jog-scale       scale.1.out
 
 net jog-scale-sel   my-mpg.scale-selector
-net jog-scale       joint.0.jog-scale axis.x.jog-scale
-net jog-scale       joint.1.jog-scale axis.y.jog-scale
-net jog-scale       joint.2.jog-scale axis.z.jog-scale
+net jog-scale       joint.0.jog-scale   axis.x.jog-scale
+net jog-scale       joint.1.jog-scale   axis.y.jog-scale
+net jog-scale       joint.2.jog-scale   axis.z.jog-scale
 
 net  vel-mode-sel   classicladder.0.out-03
 net  vel-mode-sel   joint.0.jog-vel-mode axis.x.jog-vel-mode
@@ -125,13 +124,13 @@ net  vel-mode-sel   joint.1.jog-vel-mode axis.y.jog-vel-mode
 net  vel-mode-sel   joint.2.jog-vel-mode axis.z.jog-vel-mode
 
 ### connect the buttons
-# connect Return To Home button
-net rth-button           halui.mdi-command-00     <= my-mpg.rth-btn
+# connect Func-button
+net func-button    my-mpg.func-btn #connected to gladevcp-component in postgui
 
 # connect Run button
 net run-button          halui.mode.auto and2.0.in0 <= my-mpg.prog-run-btn
-net program-run-ok      and2.0.in1               <= halui.mode.is-auto
-net remote-program-run  halui.program.run        <= and2.0.out
+net program-run-ok      and2.0.in1                 <= halui.mode.is-auto
+net remote-program-run  halui.program.run          <= and2.0.out
 
 # connect E-Stop button
 net estop-button       halui.estop.activate     <= my-mpg.estop-btn

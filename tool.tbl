@@ -1,5 +1,5 @@
 T1 P1 Z-8.28607 D12 ;12mm end mill, 4 flutes 
-T2 P2 X0 Z-13.3224 D6 ;6mm end mill alu, 3 flutes 
+T2 P2 Z-13.3224 D6 ;6mm end mill alu, 3 flutes 
 T3 P3 Z-18.0309 D2.5 ;2.5mm dubhole drill 
 T4 P4 Z-4.83769 D1 ;1mm end mill 
 T5 P5 Z-11.5912 D2 ;2mm end mill, 3 flutes 

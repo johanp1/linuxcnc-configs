@@ -2,23 +2,33 @@
 # The commands in this file are run after the AXIS GUI (including PyVCP panel) starts
 
 ### virtual panel ##############################################################
-net change-tool1 halui.mdi-command-01 <= pyvcp.change-tool1
-net change-tool2 halui.mdi-command-02 <= pyvcp.change-tool2
-net change-tool3 halui.mdi-command-03 <= pyvcp.change-tool3
-net change-tool4 halui.mdi-command-04 <= pyvcp.change-tool4
-net change-tool5 halui.mdi-command-05 <= pyvcp.change-tool5
-net change-tool6 halui.mdi-command-06 <= pyvcp.change-tool6
-net tc-pos halui.mdi-command-07 <= pyvcp.tc-button
-net panel-rth-button halui.mdi-command-08 <= pyvcp.rth-button
 
-net lube-on-button pyvcp.lube-on => parport.0.pin-09-out
+## connect the frame-enable-signals
+net xy-homed gladevcp.commands
+net xy-homed gladevcp.tool
+net xy-homed gladevcp.mpg
+setp gladevcp.lube 1
 
-net spindle-cmd-rpm                => pyvcp.spindle-ref-rpm
-net spindle-velocity-rpm           => pyvcp.spindle-curr-rpm
-net spindle-duty pwmgen.0.curr-dc  => pyvcp.spindle-pwm-duty
-net spindle-ready                  => pyvcp.led-spindle-at-speed
+## connect spindle frame
+net spindle-cmd-rpm                => gladevcp.spindle-ref-rpm
+net spindle-velocity-rpm           => gladevcp.spindle-curr-rpm
+net spindle-velocity-rpm           => gladevcp.spindle-rpm-hbar
+#net spindle-duty pwmgen.0.curr-dc  => pyvcp.spindle-pwm-duty
+net spindle-ready                  => gladevcp.led-spindle-at-speed
+net watchdog-enable                   gladevcp.wd-chkbtn
 
-net current-tool-number iocontrol.0.tool-number => pyvcp.current-tool
+## connect command frame
+net tc-pos           halui.mdi-command-01 <= gladevcp.tc-button
+net panel-rth-button halui.mdi-command-00 <= gladevcp.rth-button
+net func-button      gladevcp.trigger_pin
 
-## spindle feedback watchdog enable ############################################
-net watchdog-enable pyvcp.wd-chkbtn => my-encoder.watchdog-enable
+## connect the tool frame
+net current-tool-number iocontrol.0.tool-number => gladevcp.current-tool
+
+## connect the mpg frame
+
+## connect the luber frame
+net luber-acc-dist gladevcp.acc-distance
+net luber-cmd      gladevcp.lube-cmd
+net luber-ext-req  gladevcp.lube-cmd-btn
+net luber-reset    gladevcp.lube-reset-btn

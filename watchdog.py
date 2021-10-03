@@ -47,6 +47,7 @@ class WatchDogDaemon(threading.Thread):
          time.sleep(self.periodicity)
 
          if not self.wd.insideMargin():
+            print "Watchdog outside margin"
             self.reset()
 
       print "stopping watchdog deamon..."

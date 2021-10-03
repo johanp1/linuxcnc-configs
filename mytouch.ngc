@@ -1,22 +1,27 @@
 o<mytouch> sub
-   o10 if [EXISTS[#<_hal[my-mpg.axis-selector]>]]
-      #<selected-axis> = #<_hal[my-mpg.axis-selector]>
-      (DEBUG, my-mpg.axis-selector: #<selected-axis>)
+   o10 if [EXISTS[#<_hal[jog-axis-sel]>]]
+      #<selected-axis> = #<_hal[jog-axis-sel]>
+      ;(DEBUG, my-mpg.axis-selector: #<selected-axis>)
 	  
-      (touch off x axis)
+      (touch off z axis)
       o20 if [#<selected-axis> EQ 0]
-         G10 L2 P0 X0
+         G10 L20 P0 Z0
+         (MSG, touch off z axis)
 	  o20 endif
 	  
 	  (touch off y axis)
 	  o30 if [#<selected-axis> EQ 1]
-         G10 L2 P0 Y0
+         G10 L20 P0 Y0
+         (MSG, touch off y axis)
 	  o30 endif
 	  
-	  (touch off z axis)
+	  (touch off x axis)
 	  o40 if [#<selected-axis> EQ 2]
-         G10 L2 P0 Z0
+         G10 L20 P0 X0
+         (MSG, touch off x axis)
 	  o40 endif
+   o10 else
+     (DEBUG, didn't exist)
    o10 endif
 o<mytouch> endsub
 M2
