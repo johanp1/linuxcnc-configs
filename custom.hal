@@ -7,7 +7,6 @@ loadrt pid names=spindle-speed-ctrl
 loadrt limit2 names=spindle-ramp
 loadrt not count=1     # used for ramping spindle speed
 loadrt and2 count=3    # and2.0 used for MPG run-button, and2.1 for e-stop-chain, and2.2 for setting tool after homeing
-loadrt or2 count=1     # used in by luber and pyvcp to command lube valve
 loadrt classicladder_rt
 
 loadusr -Wn my-mpg python serialEventHandler.py --port=/dev/ttyUSB0 -c my-mpg mpg.xml
@@ -23,7 +22,6 @@ addf not.0 servo-thread
 addf and2.0 servo-thread
 addf and2.1 servo-thread
 addf and2.2 servo-thread
-addf or2.0 servo-thread
 addf classicladder.0.refresh servo-thread
 
 ### spindel speed ramping
@@ -53,6 +51,7 @@ net spindle-velocity-rps my-encoder.velocity
 net spindle-velocity-rps => spindle.0.speed-in
 net spindle-velocity-rps => scale.0.in
 net spindle-index-enable my-encoder.index-enable <=> spindle.0.index-enable
+net watchdog-enable my-encoder.watchdog-enable # connected to checkbox in postgui
 
 ### PID ctrl ###
 net spindle-cmd-rpm => spindle-speed-ctrl.command
@@ -85,9 +84,9 @@ net estop-chain and2.1.out => iocontrol.0.emc-enable-in
 ## restoring tool after homing #################################################
 # note, logic assumes z-axis homed first, when x and y axis' are 
 # homed, all axis are done
-net x-homed halui.joint.0.is-homed and2.2.in0
-net y-homed halui.joint.1.is-homed and2.2.in1
-net xy-homed and2.2.out halui.mdi-command-02
+net x-homed  halui.joint.0.is-homed and2.2.in0
+net y-homed  halui.joint.1.is-homed and2.2.in1
+net xy-homed and2.2.out             halui.mdi-command-02
 
 ### pendant ##########################################
 # jog wheel connects to x, y, z axis
@@ -114,14 +113,14 @@ net jog-scale-sel   classicladder.0.s32in-01
 net jog-scale       scale.1.out
 
 net jog-scale-sel   my-mpg.scale-selector
-net jog-scale       joint.0.jog-scale   axis.x.jog-scale
-net jog-scale       joint.1.jog-scale   axis.y.jog-scale
-net jog-scale       joint.2.jog-scale   axis.z.jog-scale
+net jog-scale       joint.0.jog-scale     axis.x.jog-scale
+net jog-scale       joint.1.jog-scale     axis.y.jog-scale
+net jog-scale       joint.2.jog-scale     axis.z.jog-scale
 
-net  vel-mode-sel   classicladder.0.out-03
-net  vel-mode-sel   joint.0.jog-vel-mode axis.x.jog-vel-mode
-net  vel-mode-sel   joint.1.jog-vel-mode axis.y.jog-vel-mode
-net  vel-mode-sel   joint.2.jog-vel-mode axis.z.jog-vel-mode
+net vel-mode-sel    classicladder.0.out-03
+net vel-mode-sel    joint.0.jog-vel-mode  axis.x.jog-vel-mode
+net vel-mode-sel    joint.1.jog-vel-mode  axis.y.jog-vel-mode
+net vel-mode-sel    joint.2.jog-vel-mode  axis.z.jog-vel-mode
 
 ### connect the buttons
 # connect Func-button
