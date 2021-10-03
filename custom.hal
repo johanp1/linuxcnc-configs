@@ -87,7 +87,7 @@ net estop-chain and2.1.out => iocontrol.0.emc-enable-in
 # homed, all axis are done
 net x-homed halui.joint.0.is-homed and2.2.in0
 net y-homed halui.joint.1.is-homed and2.2.in1
-net xy-homed and2.2.out halui.mdi-command-08
+net xy-homed and2.2.out halui.mdi-command-02
 
 ### pendant ##########################################
 # jog wheel connects to x, y, z axis
