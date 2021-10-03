@@ -20,12 +20,12 @@ net watchdog-enable                   gladevcp.wd-chkbtn
 ## connect command frame
 net tc-pos           halui.mdi-command-01 <= gladevcp.tc-button
 net panel-rth-button halui.mdi-command-00 <= gladevcp.rth-button
-net func-button      gladevcp.trigger_pin
 
 ## connect the tool frame
 net current-tool-number iocontrol.0.tool-number => gladevcp.current-tool
 
 ## connect the mpg frame
+net func-button      gladevcp.trigger_pin
 
 ## connect the luber frame
 net luber-acc-dist gladevcp.acc-distance
