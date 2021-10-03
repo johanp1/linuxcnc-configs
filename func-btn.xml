@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 <mpg>  
    <function>touch off selected axis<gcode>O&lt;mytouch&gt;call</gcode></function>
    <function>Return to z-home<gcode>G53 G0 Z0</gcode></function>
    <function>Return to home<gcode>G53 G0 X0 Y0 Z0</gcode></function>
 </mpg>
+=======
+<mpg>  
+   <function>touch off selected axis<gcode>O&lt;mytouch&gt;call</gcode></function>
+   <function>Return to z-home<gcode>G53 G0 Z0</gcode></function>
+</mpg>
+>>>>>>> 2e4c37014bb992004d5953cfdeb1dce54f2cdb98

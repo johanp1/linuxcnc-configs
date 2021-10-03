@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <mpg>  
    <halpin>"jog-counts"<event>jog</event><type>s32</type></halpin>
    <halpin>"axis-selector"<event>sela</event><type>s32</type></halpin>
@@ -6,3 +7,13 @@
    <halpin>"prog-run-btn"<event>run</event><type>bit</type></halpin>
    <halpin>"estop-btn"<event>est</event><type>bit</type></halpin>
 </mpg>
+=======
+<mpg>  
+	<halpin>"jog-counts"<event>jog</event><type>s32</type></halpin>
+    <halpin>"axis-selector"<event>sela</event><type>s32</type></halpin>
+    <halpin>"scale-selector"<event>sels</event><type>s32</type></halpin>
+    <halpin>"func-btn"<event>func</event><type>bit</type></halpin> 
+    <halpin>"prog-run-btn"<event>run</event><type>bit</type></halpin>
+    <halpin>"estop-btn"<event>est</event><type>bit</type></halpin>
+</mpg>
+>>>>>>> 2e4c37014bb992004d5953cfdeb1dce54f2cdb98
