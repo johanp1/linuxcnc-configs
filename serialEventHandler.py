@@ -251,7 +251,7 @@ def main():
 
    c = ComponentWrapper(componentName) #HAL adaptor
    eventBroker = EventBroker() #maps incomming events to the correct handler
-   serialEventGenerator = comms.instrument(portName, eventBroker.handle_event, True) #serial adaptor
+   serialEventGenerator = comms.instrument(portName, eventBroker.handle_event, True, 5, 1) #serial adaptor
 
    # add/create the HAL-pins from parsed xml and attach them to the adaptor event handler
    parsedXmlDict = xmlParser.get_parsed_data()
