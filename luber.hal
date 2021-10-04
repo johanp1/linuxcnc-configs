@@ -8,4 +8,9 @@ setp my-luber.lube-level-ok 1
 net iocontrol.0.lube-level <= my-luber.lube-level-alarm
 
 net luber-reset my-luber.reset
-net lube-cmd-out my-luber.lube-cmd => parport.0.pin-09-out
+net luber-cmd my-luber.lube-cmd => parport.0.pin-09-out
+
+## create the gui signals
+net luber-acc-dist my-luber.accumulated-distance
+net luber-ext-req  my-luber.lube-ext-req
+net luber-reset    my-luber.reset
