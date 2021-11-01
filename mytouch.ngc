@@ -6,18 +6,21 @@ o<mytouch> sub
       (touch off z axis)
       o20 if [#<selected-axis> EQ 0]
          G10 L20 P0 Z0
+         M103
          (MSG, touch off z axis)
 	  o20 endif
 	  
 	  (touch off y axis)
 	  o30 if [#<selected-axis> EQ 1]
          G10 L20 P0 Y0
+         M103
          (MSG, touch off y axis)
 	  o30 endif
 	  
 	  (touch off x axis)
 	  o40 if [#<selected-axis> EQ 2]
          G10 L20 P0 X0
+         M103
          (MSG, touch off x axis)
 	  o40 endif
    o10 else
