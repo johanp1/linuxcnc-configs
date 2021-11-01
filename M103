@@ -1,0 +1,4 @@
+#!/bin/bash
+# axis reload after
+axis-remote --reload
+exit 0
