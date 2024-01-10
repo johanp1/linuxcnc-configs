@@ -1,0 +1,28 @@
+#!/bin/bash
+# M109: Set Extruder Temperature and Wait
+float_ref=$1
+printf -v int_ref %.0f "$float_ref"
+curr=$(halcmd getp my-temp-ctrl.curr-temp)
+
+halcmd setp my-temp-ctrl.ref-temp $int_ref
+echo curr $curr
+echo ref $int_ref
+
+CNT=0
+let ref=int_ref-2
+# do until reference temp is greater or equal to current temp
+echo curr $curr, ref $ref
+until [ $curr -ge $ref ]
+do
+    sleep 1
+    curr=$(halcmd getp my-temp-ctrl.curr-temp)
+    echo curr $curr, ref $ref
+    echo cnt $CNT
+    let CNT=CNT+1
+    if [ "$CNT" = 60 ]; then
+	echo timeout
+        exit 0
+    fi
+done
+echo M109 P$int_ref
+exit 0

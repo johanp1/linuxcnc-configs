@@ -5,3 +5,4 @@ T4 P4 Z-4.83769 D1 ;1mm end mill
 T5 P5 Z-11.5912 D2 ;2mm end mill, 3 flutes 
 T6 P6 Z0 D10 ;10mm end mill alu, 3 flutes 
 T8 P8 Z0 D3 ;engraver 
+T10 P10 Z0 D10 ;10 mm 4 flutes 20230820 

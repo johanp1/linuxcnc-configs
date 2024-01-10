@@ -1,0 +1,6 @@
+#!/bin/bash
+# M106: Set Extruder fan PWM
+temp=$1
+echo fan-pwm $temp
+halcmd sets fan-pwm-value $temp
+exit 0

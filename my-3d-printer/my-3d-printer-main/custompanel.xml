@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pyvcp>
+	<labelframe text="Extruder">
+		<font>("Helvetica",12)</font>
+		<!-- Enabled -->
+		<hbox>
+			<relief>RIDGE</relief>
+			<bd>2</bd>
+			<checkbutton>
+				<halpin>"enable-chkbtn"</halpin>
+				<text>"     Enable Extruder"</text>
+				<font>("Helvetica",10)</font>
+				<initval>1</initval>
+			</checkbutton>
+		</hbox>
+		<!-- Ref Temp -->
+		<hbox>
+			<relief>RIDGE</relief>
+			<bd>2</bd>
+			<label>
+				<text>"Ref Temp "</text>
+				<font>("Helvetica",10)</font>
+			</label>
+			<u32>
+				<halpin>"ref-temp"</halpin>
+				<font>("Helvetica",10)</font>
+				<format>"6d"</format>
+				<width>6</width>
+			</u32>
+		</hbox>
+		<!-- Curr Temp -->
+		<hbox>
+			<relief>RIDGE</relief>
+			<bd>2</bd>
+			<label>
+				<text>"Curr Temp"</text>
+				<font>("Helvetica",10)</font>
+			</label>
+			<u32>
+				<halpin>"curr-temp"</halpin>
+				<font>("Helvetica",10)</font>
+				<format>"6d"</format>
+				<width>6</width>
+			</u32>
+		</hbox>
+		<hbox>
+			<relief>RIDGE</relief>
+			<bd>2</bd>
+			<label>
+				<text>"Extruder Fan PWM"</text>
+				<font>("Helvetica",10)</font>
+			</label>
+			<u32>
+				<halpin>"fan-pwm"</halpin>
+				<font>("Helvetica",10)</font>
+				<format>"6d"</format>
+				<width>6</width>
+			</u32>
+		</hbox>
+	</labelframe>
+	<labelframe text="Bed">
+		<font>("Helvetica",12)</font>
+		<hbox>
+			<relief>RIDGE</relief>
+			<bd>2</bd>
+			<label>
+				<text>"Bed PWM"</text>
+				<font>("Helvetica",10)</font>
+			</label>
+			<u32>
+				<halpin>"bed-pwm"</halpin>
+				<font>("Helvetica",10)</font>
+				<format>"6d"</format>
+				<width>6</width>
+			</u32>
+		</hbox>
+	</labelframe>
+</pyvcp>
+

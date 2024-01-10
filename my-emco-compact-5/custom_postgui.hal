@@ -1,0 +1,5 @@
+# Include your custom_postgui HAL commands here
+# This file will not be overwritten when you run stepconf again
+
+net spindle-ready => gmoccapy.spindle_at_speed_led
+net spindle-rpm-filtered gmoccapy.spindle_feedback_bar

@@ -1,6 +1,6 @@
 <luber>
 	<parameter name="lubePulseTime" value="5.0" />
-	<parameter name="totalDistance" value="4865.32" />
+	<parameter name="totalDistance" value="3483.87" />
 	<parameter name="distanceThreshold" value="10000.0" />
-	<parameter name="numberOfLubings" value="14.0" />
+	<parameter name="numberOfLubings" value="85.0" />
 </luber>

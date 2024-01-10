@@ -1,0 +1,39 @@
+loadusr -Wn my-temp-ctrl python hal_extruder_temp_ctrl.py --port=/dev/ttyACM0 -c my-temp-ctrl
+loadrt pwmgen output_type=0,0
+loadrt conv_float_u32 count=2
+loadrt and2 count=1
+
+addf conv-float-u32.0 servo-thread
+addf conv-float-u32.1 servo-thread
+addf pwmgen.make-pulses base-thread
+addf pwmgen.update servo-thread
+addf and2.0 servo-thread
+
+sets spindle-at-speed true
+
+### PWM for hot bed
+# pwmgen.0.value connected and controlled in M140
+net bed-pwm-value => conv-float-u32.0.in
+net bed-pwm-value => pwmgen.0.value
+setp pwmgen.0.pwm-freq 100.0
+setp pwmgen.0.scale 512 #duty_cycle = (value/scale) + offset, with 1.0 meaning 100%, now with scale 1020 max duty is 25%
+setp pwmgen.0.offset 0
+setp pwmgen.0.enable 1
+setp pwmgen.0.dither-pwm true
+net bed-pwm-out pwmgen.0.pwm => parport.0.pin-14-out
+
+### PWM for extruder fan
+# pwmgen.1.value connected and controlled in M106, M107
+net fan-pwm-value conv-float-u32.1.in
+net fan-pwm-value pwmgen.1.value
+setp pwmgen.1.pwm-freq 100.0
+setp pwmgen.1.scale 255 #duty_cycle = (value/scale) + offset, with 1.0 meaning 100%
+setp pwmgen.1.offset 0
+setp pwmgen.1.enable 1
+setp pwmgen.1.dither-pwm true
+net fan-pwm-out pwmgen.1.pwm => parport.0.pin-16-out
+
+### enable steppers
+net and-in1 halui.machine.is-on => and2.0.in0
+net and-out and2.0.out => parport.0.pin-17-out
+setp and2.0.in1 1  # start enabled, in1 is written by M102(enable) and M103(disable) 

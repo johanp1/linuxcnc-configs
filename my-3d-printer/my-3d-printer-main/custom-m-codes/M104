@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+# M104: Set Extruder Temperature
+import sys
+import hal
+
+_dummy = hal.component("dummy")
+
+P = sys.argv[1]
+setVal = str(int(float(P))) #convert from float-in-a-string to int-in-a-string
+hal.set_p("my-temp-ctrl.ref-temp", setVal)
+
+print "M104 P" + setVal

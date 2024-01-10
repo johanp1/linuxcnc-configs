@@ -1,0 +1,6 @@
+#!/bin/bash
+# M140: Set Bed Temperature (Fast)
+v=$1
+echo bed-pwm $v
+halcmd sets bed-pwm-value $v
+exit 0

@@ -1,0 +1,11 @@
+# Include your customized HAL commands here
+# The commands in this file are run after the AXIS GUI (including PyVCP panel) starts
+
+net temp-ctrl-enable my-temp-ctrl.enable    <= pyvcp.enable-chkbtn
+
+net temp-ctrl-ref my-temp-ctrl.ref-temp-out => pyvcp.ref-temp
+net temp-ctrl-curr my-temp-ctrl.curr-temp   => pyvcp.curr-temp
+
+net bed-pwm-u32value conv-float-u32.0.out => pyvcp.bed-pwm
+net fan-pwm-u32value conv-float-u32.1.out => pyvcp.fan-pwm
+

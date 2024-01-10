@@ -1,0 +1,98 @@
+# Include your custom HAL commands here
+# This file will not be overwritten when you run stepconf again
+loadrt near names=spindle-at-speed
+loadrt siggen num_chan=1 #spincle speed control
+loadrt and2 count=1      # 0 used in e-stop chain,
+loadrt classicladder_rt
+
+addf spindle-at-speed servo-thread
+addf scale.1          servo-thread
+addf scale.2          servo-thread
+addf siggen.0.update  servo-thread
+addf and2.0           servo-thread
+addf classicladder.0.refresh servo-thread
+
+loadusr -Wn my-mpg python serialEventHandler.py --port=/dev/ttyUSB0 -c my-mpg mpg.xml
+loadusr classicladder test_ladder.clp --nogui
+#loadusr classicladder test_ladder.clp
+#loadusr classicladder 
+
+### spindle at speed monitoring ###
+setp spindle-at-speed.scale 0.98
+setp spindle-at-speed.difference 10
+net spindle-cmd-rpm => spindle-at-speed.in1
+net spindle-rpm-filtered => spindle-at-speed.in2
+
+### temp... until encoder works...
+#net spindle-ready <= spindle-at-speed.out => spindle.0.at-speed
+net spindle-ready => spindle.0.at-speed
+sets spindle-ready 1
+###
+
+### spindle start/stop ###
+net spindle-cw <= spindle.0.forward
+net spindle-cw => parport.0.pin-14-out # turn on spindle
+
+### spindle speed ctrl ###
+setp scale.1.gain 0.473
+setp scale.1.offset 26.5
+#setp scale.1.gain 0.26
+#setp scale.1.offset 10
+setp siggen.0.amplitude 1
+setp siggen.0.offset 1
+
+net spindle-cmd-rpm => scale.1.in
+net scaled-spindle-cmd scale.1.out => siggen.0.frequency 
+net spindle-freq siggen.0.clock => parport.0.pin-16-out
+
+### e-stop chain ###
+net estop-internal <= iocontrol.0.user-enable-out
+#estop-external connected to parport.0.pin-11-in-not 
+
+net estop-internal => and2.0.in0
+net estop-external => and2.0.in1
+net estop-chain and2.0.out => iocontrol.0.emc-enable-in
+
+# connect to frequency converter quick-stop (connector 29)
+#net estop-chain parport.0.pin-17-out 
+
+### pendant ##########################################
+
+# axis selector connects to x, z axis enable
+net jog-axis-sel    my-mpg.axis-selector
+net jog-axis-sel    classicladder.0.s32in-00
+
+net jog-x-enable    classicladder.0.out-00
+net jog-z-enable    classicladder.0.out-01
+net jog-x-enable    halui.axis.x.select
+net jog-z-enable    halui.axis.z.select
+
+# jog scale selector/velocity mode
+setp scale.2.gain 0.01
+setp scale.2.offset 0
+net jog-scale-sel      my-mpg.scale-selector
+net jog-scale-sel      classicladder.0.s32in-01
+net jog-increment-100  classicladder.0.floatout-00     scale.2.in
+net jog-increment      halui.axis.selected.increment   scale.2.out
+
+# jogging plus and minus
+setp halui.axis.jog-speed 400
+net mpg-jog-plus-in     my-mpg.jog-pos-btn    => classicladder.0.in-00
+net mpg-jog-minus-in    my-mpg.jog-neg-btn    => classicladder.0.in-01
+
+net mpg-jog-plus-inc   classicladder.0.out-04 => halui.axis.selected.increment-plus
+net mpg-jog-minus-inc  classicladder.0.out-06 => halui.axis.selected.increment-minus  
+net mpg-jog-plus       classicladder.0.out-05 => halui.axis.selected.plus
+net mpg-jog-minus      classicladder.0.out-07 => halui.axis.selected.minus
+
+### connect the buttons
+# connect Func-button
+net func-button    my-mpg.func-btn #connected to gladevcp-component in postgui
+
+# connect E-Stop button
+net estop-button       halui.estop.activate   <= my-mpg.estop-btn
+
+### connect the mpg display elements
+net spindle-cmd-rpm    my-mpg.spindle-speed
+net mpg-x-pos          my-mpg.x-pos axis.x.pos-cmd
+net mpg-z-pos          my-mpg.z-pos axis.z.pos-cmd

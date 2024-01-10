@@ -1,9 +1,0 @@
-o<myspindlestart> sub
-   o10 if [#<_spindle_on> EQ 1]
-      M5
-   o10 else
-	  S800
-      M3
-   o10 endif
-o<myspindlestart> endsub
-M2
