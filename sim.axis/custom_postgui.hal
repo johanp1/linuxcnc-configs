@@ -1,0 +1,43 @@
+# Include your customized HAL commands here
+# The commands in this file are run after the AXIS GUI (including PyVCP panel) starts
+
+loadusr -Wn my-luber python3 luber.py -c my-luber luber.xml
+loadrt and2
+loadrt conv_float_u32
+
+addf and2.0 servo-thread
+addf conv-float-u32.0 servo-thread
+### virtual panel ##############################################################
+
+net tc-pos halui.mdi-command-01 <= gladevcp.tc-button
+net panel-rth-button halui.mdi-command-00 <= gladevcp.rth-button
+net func-button     gladevcp.trigger_pin
+
+net x-homed  halui.joint.0.is-homed and2.0.in0
+net y-homed  halui.joint.1.is-homed and2.0.in1
+net xy-homed and2.0.out             halui.mdi-command-04
+
+net set-start-tool motion.analog-out-00 conv-float-u32.0.in
+net start-tool-pin conv-float-u32.0.out gladevcp.saved-tool-pin 
+
+net y-homed halui.joint.1.is-homed gladevcp.commands
+net y-homed gladevcp.tool
+net y-homed gladevcp.mpg
+setp gladevcp.lube 1
+#net lube-on-button pyvcp.lube-on => or2.0.in1
+
+net spindle-cmd-rpm                => gladevcp.spindle-ref-rpm
+net spindle-velocity-rpm           => gladevcp.spindle-curr-rpm
+net spindle-velocity-rpm           => gladevcp.spindle-rpm-hbar
+#net spindle-duty pwmgen.0.curr-dc  => pyvcp.spindle-pwm-duty
+net spindle-ready                  => gladevcp.led-spindle-at-speed
+
+net current-tool-number iocontrol.0.tool-number => gladevcp.current-tool
+
+## spindle feedback watchdog enable ############################################
+#net watchdog-enable gladevcp.wd-chkbtn => my-encoder.watchdog-enable
+
+net lube-acc-dist my-luber.accumulated-distance => gladevcp.acc-distance
+net lube-cmd-led my-luber.lube-cmd => gladevcp.lube-cmd
+net lube-ext-req gladevcp.lube-cmd-btn my-luber.lube-ext-req
+net lube-reset gladevcp.lube-reset-btn my-luber.reset

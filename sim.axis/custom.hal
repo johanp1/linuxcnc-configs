@@ -1,0 +1,56 @@
+# Include your customized HAL commands here
+# This file will not be overwritten when you run stepconf again
+loadrt classicladder_rt
+#loadrt scale count=2
+
+loadusr -Wn my-mpg python3 serialEventHandler.py --port=/dev/ttyUSB0 -c my-mpg mpg.xml
+loadusr classicladder test_ladder.clp --nogui
+
+addf classicladder.0.refresh servo-thread
+addf scale0 servo-thread
+addf scale1 servo-thread
+
+net jog-axis-sel    my-mpg.axis-selector
+net func-button     my-mpg.func-btn #connected to gladevcp-component in postgui
+
+# axis selector connects to x, y, z axis enable
+net jog-axis-sel    classicladder.0.s32in-00
+net jog-x-enable    classicladder.0.out-00
+net jog-y-enable    classicladder.0.out-01
+net jog-z-enable    classicladder.0.out-02
+
+net jog-axis-sel    my-mpg.axis-selector
+net jog-x-enable    axis.x.jog-enable
+net jog-y-enable    axis.y.jog-enable
+net jog-z-enable    axis.z.jog-enable
+
+# jog scale selector connects to x, y, z axis jog scale and jog velocity mode
+net jog-scale-sel   classicladder.0.s32in-01
+net jog-scale       classicladder.0.floatout-00
+
+net jog-scale-sel   my-mpg.scale-selector
+net jog-scale       joint.0.jog-scale     axis.x.jog-scale
+net jog-scale       joint.1.jog-scale     axis.y.jog-scale
+net jog-scale       joint.2.jog-scale     axis.z.jog-scale
+
+net vel-mode-sel    classicladder.0.out-03
+net vel-mode-sel    joint.0.jog-vel-mode  axis.x.jog-vel-mode
+net vel-mode-sel    joint.1.jog-vel-mode  axis.y.jog-vel-mode
+net vel-mode-sel    joint.2.jog-vel-mode  axis.z.jog-vel-mode
+
+net jog-pos-btn my-mpg.jog-pos-btn => classicladder.0.in-00
+net jog-neg-btn my-mpg.jog-neg-btn => classicladder.0.in-01
+
+setp halui.axis.jog-speed 200
+setp scale0.gain 0.01
+setp scale0.offset 0
+setp scale1.gain 0.01
+setp scale1.offset 0
+net joystick-x my-mpg.joystick-x scale0.in
+net joystick-x-scaled scale0.out halui.axis.x.analog
+
+net joystick-z my-mpg.joystick-z scale1.in
+net joystick-z-scaled scale1.out halui.axis.y.analog 
+
+net spindle-rpm-cmd-up    classicladder.0.out-05 halui.mdi-command-02 
+net spindle-rpm-cmd-down  classicladder.0.out-07 halui.mdi-command-03 

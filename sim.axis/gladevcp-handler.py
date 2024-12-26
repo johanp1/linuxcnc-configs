@@ -1,7 +1,9 @@
-#!/usr/bin/ python
+#!/usr/bin/ python3
 
-import gtk
-import gobject
+import gi
+gi.require_version("Gtk", "3.0")
+
+from gi.repository import Gtk
 import linuxcnc
 import hal
 import hal_glib
@@ -12,9 +14,15 @@ debug = 0
 class ToolTableParser:
     def __init__(self, f):
         self.f = open(f, 'r')
-        self.list = gtk.ListStore(int, str, str)
+        self.list = Gtk.ListStore(int, str, str)
         self._parse_file()
         self.f.close()
+
+    def __repr__(self):
+        ret_str = ''
+        for l in self.list:
+            ret_str += str(l) + '\n'
+        return ret_str
 
     def get_parsed_data(self):
         return self.list
@@ -32,7 +40,7 @@ class ToolTableParser:
 class XmlParser:
     def __init__(self, f):
         self.tree = []
-        self.list = gtk.ListStore(int, str, str)
+        self.list = Gtk.ListStore(int, str, str)
 
         self._parse_file(f)
       
@@ -55,15 +63,16 @@ class XmlParser:
 class HandlerClass:
 
     def on_destroy(self,obj,data=None):
-        print "on_destroy, combobox active=%d" %(self.combo.get_active())
+        print("on_destroy, combobox active=%d" %(self.combo.get_active()))
         self.halcomp.exit() # avoid lingering HAL component
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def on_changed(self, combobox, data=None):
-        model = combobox.get_model()
-        tool_change_cmd = 'M6' + ' ' + model[combobox.get_active()][2] + ' ' + 'G43'
-        self._send_mdi(tool_change_cmd)
-        print tool_change_cmd
+        if self.tool_combo_initiated:
+            model = combobox.get_model()
+            tool_change_cmd = 'M6' + ' ' + model[combobox.get_active()][2] + ' ' + 'G43'
+            self._send_mdi(tool_change_cmd)
+            print(tool_change_cmd)
 
     def __init__(self, halcomp, builder, useropts):
         self.linuxcnc_status = linuxcnc.stat()
@@ -71,27 +80,30 @@ class HandlerClass:
         self.halcomp = halcomp
         self.builder = builder
         self.useropts = useropts
-        self.trigger = hal_glib.GPin(halcomp.newpin('trigger_pin', hal.HAL_BIT, hal.HAL_IN))
-        self.trigger.connect('value-changed', self._trigger_change)
-        
-        self.func_combo = self.builder.get_object('func-btn-combo')                
+
+        self.trigger1 = hal_glib.GPin(halcomp.newpin('trigger_pin', hal.HAL_BIT, hal.HAL_IN))
+        self.trigger1.connect('value-changed', self._trigger_change)
+
+        self.trigger2 = hal_glib.GPin(halcomp.newpin('saved-tool-pin', hal.HAL_U32, hal.HAL_IN))
+        self.trigger2.connect('value-changed', self._init_tool_combo)
+
         func_list = XmlParser('func-btn.xml').get_parsed_data()
-
-        self.tool_combo = self.builder.get_object('tool-combo')                
-        tool_list = ToolTableParser('tool.tbl').get_parsed_data()
-
+        self.func_combo = self.builder.get_object('func-btn-combo')                
         self.func_combo.set_model(func_list)
         self.func_combo.set_entry_text_column(1)
         self.func_combo.set_active(0)
         
+        tool_list = ToolTableParser('sim_mm.tbl').get_parsed_data()
+        self.tool_combo = self.builder.get_object('tool-combo')                
         self.tool_combo.set_model(tool_list)
         self.tool_combo.set_entry_text_column(2)
         self.tool_combo.set_active(0)
 
-        renderer_text = gtk.CellRendererText()      
+        renderer_text = Gtk.CellRendererText()      
         self.func_combo.pack_start(renderer_text, True)
         self.tool_combo.pack_start(renderer_text, True)
-       
+        self.tool_combo_initiated = False
+
     def _trigger_change(self, pin, userdata = None):
         #setp gladevcp.trigger_pin 1
         #print "pin value changed to: " + str(pin.get())
@@ -101,6 +113,12 @@ class HandlerClass:
         if pin.get() is True:
             model = self.func_combo.get_model()
             self._send_mdi(model[self.func_combo.get_active()][2])
+
+    def _init_tool_combo(self, pin, userdata = None):
+        #setp gladevcp.saved_tool_pin 2
+        self.tool_combo.set_active(pin.get())
+        self.tool_combo_initiated = True
+        
 
     def _ok_for_mdi(self):
         self.linuxcnc_status.poll()
@@ -115,8 +133,8 @@ class HandlerClass:
 def get_handlers(halcomp, builder, useropts):
 
     global debug
-    #for cmd in useropts:
-    #    exec(cmd in globals())
+    for cmd in useropts:
+        exec(cmd in globals())
 
     return [HandlerClass(halcomp, builder, useropts)]
 
